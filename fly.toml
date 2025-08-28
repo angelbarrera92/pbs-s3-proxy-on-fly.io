@@ -1,0 +1,40 @@
+app = "your-app-name"
+primary_region = "ams"
+
+[build]
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 8080
+
+  auto_start_machines = true
+  auto_stop_machines = "suspend"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 8080
+    force_https = true
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.http_checks]]
+    interval = "10s"
+    timeout = "2s"
+    method = "GET"
+    path = "/health"
+    protocol = "http"
+
+[[vm]]
+memory = "256mb"
+size = "shared-cpu-1x"
+
+[experimental]
+cmd = ["-bind", "127.0.0.1:3000", "-endpoint", "your-s3-endpoint:443", "-usessl"]
+
+[env]
+PBS_GC_ACCESS_KEY = "your-access-key"
+PBS_GC_ENDPOINT = "your-s3-endpoint:443"
+PBS_GC_BUCKET = "your-bucket-name"
+PBS_GC_RETENTION = "7"
